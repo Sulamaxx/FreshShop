@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <base href="/FreshShop/" target="_self">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Verify Account - Fresh Shop</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="css/notification.css">
+    </head>
+    <body>
+        <div class="container-fluid vh-100 d-flex justify-content-center align-items-center bg-gradient">
+            <div class="col-md-7 col-lg-5">
+                <div class="card shadow p-5 rounded-4">
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold">Verify Your Account</h2>
+                        <p class="text-muted">Enter the code sent to your email to verify your account.</p>
+                    </div>
+                    <form id="verificationForm" action="/verify" method="POST">
+
+                        <div class="mb-3">
+                            <label for="verification_code" class="form-label">Verification Code</label>
+                            <input type="text" id="verification_code" name="verification_code" class="form-control py-2" placeholder="Enter the verification code" required>
+                        </div>
+
+                        <button type="button" id="verificationButton" onclick="SubmitVerificationCode();" class="btn btn-primary w-100 py-2">Submit</button>
+                    </form>
+                    <p class="text-center mt-3">Didn't receive a code? <button class="link-primary" onclick="resendCode()">Resend Code</button></p>
+                </div>
+            </div>
+        </div>
+        <script src="js/notification.js"></script>
+        <script src="js/script/verification.js"></script>
+    </body>
+</html>
