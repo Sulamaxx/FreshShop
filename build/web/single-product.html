@@ -233,46 +233,51 @@
                                 <span class="sr-only">Next</span> 
                             </a>
                             <ol class="carousel-indicators mt-1" >
-                                <li data-target="#carousel-example-1" data-slide-to="0" class="active">
-                                    <img class="d-block w-100 img-fluid" id="image1-small" src="images/smp-img-01.jpg" alt="" />
+                                <li data-target="#carousel-example-1" style="height: 80px;" data-slide-to="0" class="active">
+                                    <img class="d-block w-100 img-fluid" style="height: 80px;" style="object-fit: cover" id="image1-small" src="images/smp-img-01.jpg" alt="" />
                                 </li>
-                                <li data-target="#carousel-example-1" data-slide-to="1">
-                                    <img class="d-block w-100 img-fluid" id="image2-small"  src="images/smp-img-02.jpg" alt="" />
+                                <li data-target="#carousel-example-1" style="height: 80px;" data-slide-to="1">
+                                    <img class="d-block w-100 img-fluid" style="height: 80px;" id="image2-small"  src="images/smp-img-02.jpg" alt="" />
                                 </li>
-                                <li data-target="#carousel-example-1" data-slide-to="2">
-                                    <img class="d-block w-100 img-fluid"  id="image3-small" src="images/smp-img-03.jpg" alt="" />
+                                <li data-target="#carousel-example-1" style="height: 80px;" data-slide-to="2">
+                                    <img class="d-block w-100 img-fluid" style="height: 80px;"  id="image3-small" src="images/smp-img-03.jpg" alt="" />
                                 </li>
                             </ol>
                         </div>
                     </div>
                     <div class="col-xl-7 col-lg-7 col-md-6">
                         <div class="single-product-details">
-                            <h2 id="fs-product-title">Fachion Lorem ipsum dolor sit amet</h2>
-                            <h5> <del>LKR <span id="fs-product-price-"></span></del> LKR </h5>
-                            <p class="available-stock"><span> More than 20 available / <a href="#">8 sold </a></span><p>
+                            <h2 id="fs-product-title"></h2>
+                            <h5> <del>LKR <span id="fs-product-price-max"></span></del> LKR <span id="fs-product-price-min"></span></h5>
+                            <p class="available-stock"><span> More than <span id="fs-product-qty"></span> available</span><p>
+                            <div class="col-12">
+                                <div class="row">
+                                    <h4>Short Description: <span class="text-primary" id="fs-product-category"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h4>
+                                    <h4>Short Description: <span class="text-primary" id="fs-product-sub-category"></span></h4>
+                                </div>
+                            </div>
                             <h4>Short Description:</h4>
-                            <p>Nam sagittis a augue eget scelerisque. Nullam lacinia consectetur sagittis. Nam sed neque id eros fermentum dignissim quis at tortor. Nullam ultricies urna quis sem sagittis pharetra. Nam erat turpis, cursus in ipsum at,
-                                tempor imperdiet metus. In interdum id nulla tristique accumsan. Ut semper in quam nec pretium. Donec egestas finibus suscipit. Curabitur tincidunt convallis arcu. </p>
+                            <p id="fs-product-description"> </p>
                             <ul>
                                 <li>
                                     <div class="form-group quantity-box">
                                         <label class="control-label">Quantity</label>
-                                        <input class="form-control" value="0" min="0" max="20" type="number">
+                                        <input class="form-control" id="fs-product-add-cart-qty" value="1" min="1" max="1000" type="number">
                                     </div>
                                 </li>
                             </ul>
 
                             <div class="price-box-bar">
                                 <div class="cart-and-bay-btn">
-                                    <a class="btn hvr-hover" data-fancybox-close="" href="#">Buy New</a>
-                                    <a class="btn hvr-hover" data-fancybox-close="" href="#">Add to cart</a>
+                                    <!--<a class="btn hvr-hover" data-fancybox-close="" href="#">Buy New</a>-->
+                                    <a class="btn hvr-hover" data-fancybox-close="" id="fs-product-add-cart-button" href="">Add to cart</a>
                                 </div>
                             </div>
 
                             <div class="add-to-btn">
                                 <div class="add-comp">
                                     <a class="btn hvr-hover" href="#"><i class="fas fa-heart"></i> Add to wishlist</a>
-                                    <a class="btn hvr-hover" href="#"><i class="fas fa-sync-alt"></i> Add to Compare</a>
+                                    <!--<a class="btn hvr-hover" href="#"><i class="fas fa-sync-alt"></i> Add to Compare</a>-->
                                 </div>
                                 <div class="share-bar">
                                     <a class="btn hvr-hover" href="#"><i class="fab fa-facebook" aria-hidden="true"></i></a>
@@ -330,14 +335,35 @@
                 <div class="row my-5">
                     <div class="col-lg-12">
                         <div class="title-all text-center">
-                            <h1>Featured Products</h1>
+                            <h1>Similar Products</h1>
                             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet lacus enim.</p>
                         </div>
-                        <div class="featured-products-box owl-carousel owl-theme">
+                        <div class="featured-products-box owl-carousel owl-theme" id="fs-similar-container">
+
+                            <div class="item" id="fs-similar-item">
+                                <div class="products-single fix">
+                                    <div class="box-img-hover">
+                                        <img id="fs-similar-item-image" style="height: 250px;" src="images/img-pro-01.jpg" class="img-fluid" alt="Image">
+                                        <div class="mask-icon">
+                                            <ul>
+                                                <li><a href="#" data-toggle="tooltip" data-placement="right" title="View"><i class="fas fa-eye"></i></a></li>
+                                                <li><a href="#" data-toggle="tooltip" data-placement="right" title="Compare"><i class="fas fa-sync-alt"></i></a></li>
+                                                <li><a href="#" data-toggle="tooltip" data-placement="right" title="Add to Wishlist"><i class="far fa-heart"></i></a></li>
+                                            </ul>
+                                            <a class="cart"  href="">Add to Cart</a>
+                                        </div>
+                                    </div>
+                                    <div class="why-text">
+                                        <h4 id="fs-similar-item-title">Lorem ipsum dolor sit amet</h4>
+                                        <h5><del>LKR <span id="fs-similar-item-price-max"></span></del> LKR <span id="fs-similar-item-price"></span>></h5>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="item">
                                 <div class="products-single fix">
                                     <div class="box-img-hover">
-                                        <img src="images/img-pro-01.jpg" class="img-fluid" alt="Image">
+                                        <img src="images/img-pro-02.jpg" class="img-fluid" alt="Image">
                                         <div class="mask-icon">
                                             <ul>
                                                 <li><a href="#" data-toggle="tooltip" data-placement="right" title="View"><i class="fas fa-eye"></i></a></li>
@@ -486,6 +512,7 @@
                                     </div>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -677,6 +704,10 @@
         <a href="#" id="back-to-top" title="Back to top" style="display: none;">&uarr;</a>
 
         <!-- ALL JS FILES -->
+
+        <script src="js/notification.js"></script>
+        <script src="js/script/single-product.js"></script>
+
         <script src="js/jquery-3.2.1.min.js"></script>
         <script src="js/popper.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
@@ -692,8 +723,7 @@
         <script src="js/form-validator.min.js"></script>
         <script src="js/contact-form-script.js"></script>
         <script src="js/custom.js"></script>
-        <script src="js/notification.js"></script>
-        <script src="js/script/single-product.js"></script>
+
     </body>
 
 </html>

@@ -7,8 +7,10 @@ package controller;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import entity.Product;
+import entity.SubCategory;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -16,7 +18,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.HibernateUtil;
 import model.Validations;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 
 /**
  *
@@ -35,9 +40,7 @@ public class LoadSingleProduct extends HttpServlet {
         Session session = HibernateUtil.getSessionFactory().openSession();
 
         String id = req.getParameter("id");
-        System.out.println("");
-        System.out.println(id);
-        
+
         if (!Validations.isInteger(id)) {
             responseObject.addProperty("message", "product not found");
         } else {
@@ -47,8 +50,26 @@ public class LoadSingleProduct extends HttpServlet {
                     responseObject.addProperty("message", "Something went wrong");
                 } else {
                     product.setUser(null);
+
+                    Criteria criteria = session.createCriteria(SubCategory.class);
+                    criteria.add(Restrictions.eq("category", product.getSubCategory().getCategory()));
+                    List<SubCategory> subCategoryList = criteria.list();
+
+                    Criteria criteria1 = session.createCriteria(Product.class);
+                    criteria1.add(Restrictions.in("subCategory", subCategoryList));
+                    criteria1.add(Restrictions.ne("id", product.getId()));
+                    criteria.addOrder(Order.desc("id"));
+                    criteria1.setMaxResults(12);
+                    List<Product> productList = criteria1.list();
+
+                    for (Product product1 : productList) {
+                        product1.setUser(null);
+                    }
+
                     responseObject.addProperty("success", true);
                     responseObject.add("product", gson.toJsonTree(product));
+                    responseObject.add("productList", gson.toJsonTree(productList));
+
                 }
 
             } catch (Exception e) {
