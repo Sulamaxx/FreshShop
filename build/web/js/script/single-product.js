@@ -35,7 +35,7 @@ const loadSingleProduct = async() => {
                     add_to_cart_qty_single_product = e.target.value;
                     console.log(add_to_cart_qty_single_product);
                 });
-                document.getElementById("fs-product-add-cart-button").addEventListener("click", () => {
+                document.getElementById("fs-product-add-cart-button").addEventListener("click", (event) => {
                     event.preventDefault();
                     addToCart(product.id, add_to_cart_qty_single_product);
                 });
@@ -54,6 +54,20 @@ const loadSingleProduct = async() => {
                     similar_item_clone.querySelector("#fs-similar-item-price-max").innerHTML = new Intl.NumberFormat("en-US", {minimumFractionDigits: 2}).format(item.price);
                     similar_item_clone.querySelector("#fs-similar-item-price").innerHTML = new Intl.NumberFormat("en-US", {minimumFractionDigits: 2}).format(item.price - ((item.price / 100) * item.discount));
                     similar_item_clone.querySelector("#fs-similar-item-image").src = "product-images/" + item.id + "/image1.png";
+                    //view single product
+                    similar_item_clone.querySelector("#fs-similar-item-view").href = "single-product.html?id=" + item.id;
+
+                    //add to cart list
+                    similar_item_clone.querySelector("#fs-similar-item-cart").addEventListener("click", (event) => {
+                        event.preventDefault();
+                        addToCart(item.id, 1);
+                    });
+
+                    //add to wish list
+                    similar_item_clone.querySelector("#fs-similar-item-wishlist").addEventListener("click", (event) => {
+                        event.preventDefault();
+                        //need to set add to wishlist
+                    });
                     similar_item_container.appendChild(similar_item_clone);
                 });
 
@@ -112,30 +126,27 @@ const loadSingleProduct = async() => {
 
 const addToCart = async(id, qty) => {
 
-    console.log(id)
-    console.log(qty)
+    const response = await fetch("AddToCart?id=" + id + "&qty=" + qty);
 
-//    const response = await fetch("AddToCart?id=" + id);
-//
-//    if (response.ok) {
-//        const json = await response.json();
-//        console.log(json);
-//
-//        if (json.success) {
-//            popup.success({
-//                message: json.message
-//            });
-//        } else {
-//            popup.error({
-//                message: json.message
-//            });
-//        }
-//
-//    } else {
-//
-//        popup.error({
-//            message: "Try again later!"
-//        });
-//
-//    }
+    if (response.ok) {
+        const json = await response.json();
+        console.log(json);
+
+        if (json.success) {
+            popup.success({
+                message: json.message
+            });
+        } else {
+            popup.error({
+                message: json.message
+            });
+        }
+
+    } else {
+
+        popup.error({
+            message: "Try again later!"
+        });
+
+    }
 };

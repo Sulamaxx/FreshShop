@@ -28,7 +28,7 @@ public class SubCategory implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "category_id")
-    private Category category;
+    private Cart category;
 
     public SubCategory() {
     }
@@ -49,11 +49,11 @@ public class SubCategory implements Serializable {
         this.name = name;
     }
 
-    public Category getCategory() {
+    public Cart getCategory() {
         return category;
     }
 
-    public void setCategory(Category category) {
+    public void setCategory(Cart category) {
         this.category = category;
     }
 

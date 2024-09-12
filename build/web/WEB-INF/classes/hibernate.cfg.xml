@@ -14,6 +14,7 @@
         <mapping class="entity.Unit"/>
         <mapping class="entity.Product"/>
         <mapping class="entity.ProductStatus"/>
+        <mapping class="entity.Cart"/>
         
         
     </session-factory>

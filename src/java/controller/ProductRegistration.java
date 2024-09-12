@@ -7,7 +7,7 @@ package controller;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import dto.UserDTO;
-import entity.Category;
+import entity.Cart;
 import entity.Product;
 import entity.ProductStatus;
 import entity.SubCategory;
@@ -97,7 +97,7 @@ public class ProductRegistration extends HttpServlet {
 
             try {
                 // check category exist
-                Category categoryObject = (Category) session.get(Category.class, Integer.parseInt(category));
+                Cart categoryObject = (Cart) session.get(Cart.class, Integer.parseInt(category));
                 if (categoryObject == null) {
                     responseObject.addProperty("message", "Invalid category");
                 } else {
