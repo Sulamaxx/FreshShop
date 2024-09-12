@@ -33,7 +33,7 @@ const loadSingleProduct = async() => {
 
                 document.getElementById("fs-product-add-cart-qty").addEventListener("change", (e) => {
                     add_to_cart_qty_single_product = e.target.value;
-                    console.log(add_to_cart_qty_single_product);
+                   
                 });
                 document.getElementById("fs-product-add-cart-button").addEventListener("click", (event) => {
                     event.preventDefault();
