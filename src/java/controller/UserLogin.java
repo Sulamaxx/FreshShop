@@ -6,10 +6,14 @@ package controller;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import dto.CartDTO;
 import dto.UserDTO;
+import entity.Cart;
 import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -66,6 +70,73 @@ public class UserLogin extends HttpServlet {
                     // check user credential
                     if (MD5HashChecker.checkPassword(userDTO.getPassword(), user.getPassword())) {
                         //Password matched
+
+                        // check user has session cart and convert it db cart
+                        if (httpSession.getAttribute("sessionCart") != null) {
+                            ArrayList<CartDTO> sessionCart = (ArrayList<CartDTO>) httpSession.getAttribute("sessionCart");
+
+                            //check user has db cart
+                            Criteria criteria1 = session.createCriteria(Cart.class);
+                            criteria1.add(Restrictions.eq("user", user));
+
+                            if (criteria1.list().isEmpty()) {
+                                //new to db cart
+                                for (CartDTO cartDTO : sessionCart) {
+                                    Cart cart = new Cart();
+                                    cart.setProduct(cartDTO.getProduct());
+                                    cart.setQty(cartDTO.getQty());
+                                    cart.setUser(user);
+                                    session.save(cart);
+                                }
+                            } else {
+                                List<Cart> dbCartList = criteria1.list();
+
+                                for (CartDTO cartDTO : sessionCart) {
+
+                                    boolean isFound = false;
+
+                                    for (Cart cart : dbCartList) {
+
+                                        if (cartDTO.getProduct().getId() == cart.getProduct().getId()) {
+                                            // exist product in db cart
+                                            isFound = true;
+                                            //check qty
+                                            if (cart.getProduct().getQty() >= (cart.getQty() + cartDTO.getQty())) {
+                                                //quantity available
+                                                cart.setQty(cart.getQty() + cartDTO.getQty());
+
+                                            } else {
+                                                //qty not available
+                                                // set max qty
+                                                cart.setQty(cart.getProduct().getQty());
+
+                                            }
+                                            session.update(cart);
+                                            break;
+                                        }
+
+                                    }
+
+                                    if (!isFound) {
+                                        // new to db cart
+                                        Cart cart = new Cart();
+                                        cart.setProduct(cartDTO.getProduct());
+                                        cart.setQty(cartDTO.getQty());
+                                        cart.setUser(user);
+
+                                        session.save(cart);
+
+                                    }
+
+                                }
+
+                            }
+
+                            session.beginTransaction().commit();
+
+                        } else {
+                            //no issue
+                        }
 
                         if (user.getVerification() == 1111) {
                             // already verified

@@ -33,11 +33,11 @@ const loadSingleProduct = async() => {
 
                 document.getElementById("fs-product-add-cart-qty").addEventListener("change", (e) => {
                     add_to_cart_qty_single_product = e.target.value;
-                   
+
                 });
                 document.getElementById("fs-product-add-cart-button").addEventListener("click", (event) => {
-                    event.preventDefault();
                     addToCart(product.id, add_to_cart_qty_single_product);
+                    event.preventDefault();
                 });
 
                 let productList = json.productList;
@@ -59,8 +59,8 @@ const loadSingleProduct = async() => {
 
                     //add to cart list
                     similar_item_clone.querySelector("#fs-similar-item-cart").addEventListener("click", (event) => {
-                        event.preventDefault();
                         addToCart(item.id, 1);
+                        event.preventDefault();
                     });
 
                     //add to wish list

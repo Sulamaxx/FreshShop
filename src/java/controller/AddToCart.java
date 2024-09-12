@@ -32,20 +32,20 @@ import org.hibernate.criterion.Restrictions;
  */
 @WebServlet(name = "AddToCart", urlPatterns = {"/AddToCart"})
 public class AddToCart extends HttpServlet {
-    
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        
+
         JsonObject responseObject = new JsonObject();
         responseObject.addProperty("success", false);
-        
+
         Gson gson = new Gson();
         Session session = HibernateUtil.getSessionFactory().openSession();
         HttpSession httpSession = req.getSession();
-        
+
         String id = req.getParameter("id");
         String qty = req.getParameter("qty");
-        
+
         if (id.isEmpty()) {
             responseObject.addProperty("message", "Product must required");
         } else if (!Validations.isInteger(id)) {
@@ -55,19 +55,19 @@ public class AddToCart extends HttpServlet {
         } else if (!Validations.isDouble(qty)) {
             responseObject.addProperty("message", "Invalid quantity");
         } else {
-            
+
             try {
                 //check product
                 Product product = (Product) session.get(Product.class, Integer.parseInt(id));
-                
+
                 if (product == null) {
                     responseObject.addProperty("message", "Product not found");
                 } else {
-                    
+
                     if (httpSession.getAttribute("user") != null) {
                         //db cart
                         UserDTO userDTO = (UserDTO) httpSession.getAttribute("user");
-                        
+
                         Criteria criteria0 = session.createCriteria(User.class);
                         criteria0.add(Restrictions.eq("email", userDTO.getEmail()));
                         User user = (User) criteria0.uniqueResult();
@@ -85,32 +85,32 @@ public class AddToCart extends HttpServlet {
                                 cart.setQty(Double.parseDouble(qty));
                                 cart.setUser(user);
                                 session.save(cart);
-                                
+
                                 responseObject.addProperty("success", true);
                                 responseObject.addProperty("message", "Successfully added to cart");
                             } else {
                                 responseObject.addProperty("message", "Quantity not available");
                             }
-                            
+
                         } else {
                             // uesr has db cart for this product
                             Cart cart = (Cart) criteria1.list().get(0);
                             //check qty availability
                             if (product.getQty() >= (cart.getQty() + Double.parseDouble(qty))) {
-                                
+
                                 cart.setQty(cart.getQty() + Double.parseDouble(qty));
-                                
+
                                 session.update(cart);
-                                
+
                                 responseObject.addProperty("success", true);
                                 responseObject.addProperty("message", "Successfully updated cart");
                             } else {
                                 responseObject.addProperty("message", "Quantity not available");
                             }
-                            
+
                         }
                         session.beginTransaction().commit();
-                        
+
                     } else {
                         // session cart
                         ArrayList<CartDTO> sessionCart;
@@ -118,32 +118,40 @@ public class AddToCart extends HttpServlet {
                             //already session cart exist
                             sessionCart = (ArrayList<CartDTO>) httpSession.getAttribute("sessionCart");
 
+                            boolean isFound = false;
                             //check product is already in session cart
                             for (CartDTO cartDTO : sessionCart) {
+
                                 if (cartDTO.getProduct().getId() == product.getId()) {
                                     // product already in session cart
                                     //check qty
+                                    isFound = true;
                                     if (product.getQty() >= (cartDTO.getQty() + Double.parseDouble(qty))) {
                                         //updaete qty
                                         cartDTO.setQty(cartDTO.getQty() + Double.parseDouble(qty));
+
                                         responseObject.addProperty("success", true);
                                         responseObject.addProperty("message", "Successfully updated cart");
                                     } else {
                                         responseObject.addProperty("message", "Product quantity not enough");
                                     }
-                                } else {
-                                    //product new to session cart
-                                    CartDTO cartDTO1 = new CartDTO();
-                                    cartDTO1.setProduct(product);
-                                    cartDTO1.setQty(Double.parseDouble(qty));
-                                    
-                                    sessionCart.add(cartDTO1);
-                                    
-                                    responseObject.addProperty("success", true);
-                                    responseObject.addProperty("message", "Successfully added to cart");
+                                    break;
                                 }
                             }
-                            
+
+                            if (!isFound) {
+                                //product new to session cart
+                                CartDTO cartDTO1 = new CartDTO();
+                                product.setUser(null);
+                                cartDTO1.setProduct(product);
+                                cartDTO1.setQty(Double.parseDouble(qty));
+
+                                sessionCart.add(cartDTO1);
+
+                                responseObject.addProperty("success", true);
+                                responseObject.addProperty("message", "Successfully added to cart");
+                            }
+
                         } else {
                             // not found sesion cart
                             sessionCart = new ArrayList<>();
@@ -154,15 +162,15 @@ public class AddToCart extends HttpServlet {
                                 cartDTO.setQty(Double.parseDouble(qty));
                                 sessionCart.add(cartDTO);
                                 httpSession.setAttribute("sessionCart", sessionCart);
-                                
+
                                 responseObject.addProperty("success", true);
                                 responseObject.addProperty("message", "Successfully added to cart");
-                                
+
                             } else {
                                 responseObject.addProperty("message", "Quatity not available");
                             }
                         }
-                        
+
                     }
                 }
             } catch (Exception e) {
@@ -171,10 +179,10 @@ public class AddToCart extends HttpServlet {
                 session.close();
             }
         }
-        
+
         resp.setContentType("application/json");
         resp.getWriter().write(gson.toJson(responseObject));
-        
+
     }
-    
+
 }
