@@ -24,22 +24,22 @@ public class Product implements Serializable {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "title")
+    @Column(name = "title", length = 45, nullable = false)
     private String title;
 
-    @Column(name = "description")
+    @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "qty")
+    @Column(name = "qty", nullable = false)
     private Double qty;
 
-    @Column(name = "price")
+    @Column(name = "price", nullable = false)
     private Double price;
 
-    @Column(name = "discount")
+    @Column(name = "discount", nullable = false)
     private Double discount;
 
-    @Column(name = "datetime")
+    @Column(name = "datetime", nullable = false)
     private Date datetime;
 
     @ManyToOne
@@ -117,7 +117,6 @@ public class Product implements Serializable {
         this.description = description;
     }
 
-   
     public Double getQty() {
         return qty;
     }
@@ -149,7 +148,5 @@ public class Product implements Serializable {
     public void setDatetime(Date datetime) {
         this.datetime = datetime;
     }
-
-   
 
 }

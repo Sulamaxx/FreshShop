@@ -21,7 +21,7 @@ public class Unit implements Serializable {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "name")
+    @Column(name = "name", length = 45, nullable = false)
     private String name;
 
     public Unit() {
@@ -42,5 +42,5 @@ public class Unit implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-    
+
 }

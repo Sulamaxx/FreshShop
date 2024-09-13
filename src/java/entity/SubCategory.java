@@ -23,7 +23,7 @@ public class SubCategory implements Serializable {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "name")
+    @Column(name = "name", length = 45, nullable = false)
     private String name;
 
     @ManyToOne
@@ -56,7 +56,5 @@ public class SubCategory implements Serializable {
     public void setCategory(Category category) {
         this.category = category;
     }
-
-    
 
 }

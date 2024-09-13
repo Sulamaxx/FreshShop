@@ -13,18 +13,18 @@ import javax.persistence.Table;
  * @author sjeew
  */
 @Entity
-@Table(name = "category")
-public class Category implements Serializable {
+@Table(name = "city")
+public class City implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
 
-    @Column(name = "name",length = 45, nullable = false)
+    @Column(name = "name", length = 45, nullable = false)
     private String name;
 
-    public Category() {
+    public City() {
     }
 
     public int getId() {
@@ -42,5 +42,5 @@ public class Category implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-    
+
 }

@@ -23,7 +23,7 @@ public class Cart implements Serializable {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "qty")
+    @Column(name = "qty", nullable = false)
     private Double qty;
 
     @ManyToOne
@@ -69,5 +69,4 @@ public class Cart implements Serializable {
         this.qty = qty;
     }
 
-   
 }
