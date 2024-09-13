@@ -2,6 +2,43 @@ const popup = Notification();
 
 var selectedAddress = 0;
 
+// Payment completed. It can be a successful failure.
+payhere.onCompleted = function onCompleted(orderId) {
+    console.log("Payment completed. OrderID:" + orderId);
+    // Note: validate the payment and show success or failure page to the customer
+    popup.success({
+        message: "Order Placed. Thank you!"
+    });
+    setTimeout(() => {
+        window.location = "index.html";
+    }, 1000);
+};
+
+// Payment window closed
+payhere.onDismissed = function onDismissed() {
+    // Note: Prompt user to pay again or show an error page
+    console.log("Payment dismissed");
+    popup.error({
+        message: "Payment dismissed"
+    });
+    setTimeout(() => {
+        window.location = "index.html";
+    }, 1000);
+};
+
+// Error occurred
+payhere.onError = function onError(error) {
+    // Note: show an error page
+    console.log("Error:" + error);
+    popup.error({
+        message: "Error:" + error
+    });
+    setTimeout(() => {
+        window.location = "index.html";
+    }, 1000);
+};
+
+
 const loadCheckOut = async() => {
     const response = await fetch("LoadCheckOut");
 
@@ -161,9 +198,13 @@ const checkOut = async() => {
             popup.success({
                 message: json.message
             });
-            setTimeout(() => {
-                window.location = "index.html"
-            }, 1000);
+            console.log(json.payHereJson);
+            payhere.startPayment(json.payHereJson);
+
+
+//            setTimeout(() => {
+//                window.location = "index.html";
+//            }, 1000);
         } else {
             popup.error({
                 message: json.message

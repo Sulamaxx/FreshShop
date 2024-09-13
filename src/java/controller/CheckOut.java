@@ -16,6 +16,7 @@ import entity.Orders;
 import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.List;
 import javax.servlet.ServletException;
@@ -25,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.HibernateUtil;
+import model.PayHere;
 import model.Validations;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -110,7 +112,7 @@ public class CheckOut extends HttpServlet {
                         responseObject.addProperty("message", "postal code must contain 5 numbers");
                     } else {
                         if (session.get(City.class, Integer.parseInt(city)) != null) {
-                            
+
                             City cityDB = (City) session.get(City.class, Integer.parseInt(city));
 
                             // save address
@@ -156,7 +158,7 @@ public class CheckOut extends HttpServlet {
             Orders order = new Orders();
             order.setAddress(address);
             order.setUser(user);
-            session.save(order);
+            int order_id = (int) session.save(order);
 
             Criteria criteria = session.createCriteria(Cart.class);
             criteria.add(Restrictions.eq("user", user));
@@ -167,7 +169,23 @@ public class CheckOut extends HttpServlet {
                 List<Cart> cartList = criteria.list();
                 OrderStatus orderStatus = (OrderStatus) session.get(OrderStatus.class, 1);
 
+                //save order item
+                double amount = 0;
+                String items = "";
                 for (Cart cart : cartList) {
+                    //calculate amount
+                    amount += (cart.getQty() * (cart.getProduct().getPrice() - ((cart.getProduct().getPrice() / 100) * cart.getProduct().getDiscount())));
+                    //shipping charge
+
+//                    if (address.getCity().getId() == 1) {
+//                        amount += 1000;
+//                    } else {
+//                        amount += 2500;
+//                    }
+                    //get item details
+                    items += cart.getProduct().getTitle() + " x " + cart.getQty();
+
+                    // order
                     OrderItem orderItem = new OrderItem();
                     orderItem.setDatetime(new Date());
                     orderItem.setOrder(order);
@@ -186,9 +204,52 @@ public class CheckOut extends HttpServlet {
                 }
 
                 //payhere dto
+                //set payment data :start
+                String merchant_id = "1228185";
+                String formattedAmount = new DecimalFormat("0.00").format(amount);
+                String currency = "LKR";
+                String merchantSecret = "ODE4NDkwMjczMjUxOTE4OTcwNTI2MDE5Mjk2NzMwNDg1ODkwNzQ=";
+                String merchantSecretHash = PayHere.generateMD5(merchantSecret);
+
+                JsonObject payHere = new JsonObject();
+
+                payHere.addProperty("sandbox", true);
+                payHere.addProperty("merchant_id", merchant_id);
+
+                payHere.addProperty("return_url", "");
+                payHere.addProperty("cancel_url", "");
+                payHere.addProperty("notify_url", "");//***
+
+                payHere.addProperty("order_id", String.valueOf(order_id));
+                payHere.addProperty("items", items);
+                payHere.addProperty("amount", formattedAmount);
+                payHere.addProperty("currency", currency);
+
+                // Generate hash:start
+                //merchartId + orderId + Amount + Currency + MetchantSecretHash
+                String md4Hash = PayHere.generateMD5(merchant_id + order_id + formattedAmount + currency + merchantSecretHash);
+                payHere.addProperty("hash", md4Hash);
+                // Generate hash:end
+
+                payHere.addProperty("first_name", user.getFirst_name());
+                payHere.addProperty("last_name", user.getLast_name());
+                payHere.addProperty("email", user.getEmail());
+                
+                payHere.addProperty("phone", "0767081491");
+                payHere.addProperty("address", "Egodapitya, Weerapokuna");
+                payHere.addProperty("city", "Bingiriya");
+                payHere.addProperty("country", "Sri Lanka");
+                
+                payHere.addProperty("delivery_address", "");
+                payHere.addProperty("delivery_city", "");
+                payHere.addProperty("delivery_country", "");
+                payHere.addProperty("delivery_country", "");
+                payHere.addProperty("custom_1", "");
+                payHere.addProperty("custom_2", "");
+
                 responseObject.addProperty("success", true);
                 responseObject.addProperty("message", "Order Place Successfully");
-
+                responseObject.add("payHereJson", new Gson().toJsonTree(payHere));
             }
 
             transaction.commit();

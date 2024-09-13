@@ -13,49 +13,8 @@ const loadShopData = async() => {
             let subCategoryList = json.subCategoryList;
             let productList = json.productList;
 
-
-            // grid product view
-            let grid_view_container = document.getElementById("grid-view-container");
-            let grid_view_item = document.getElementById("grid-view-item");
-            grid_view_container.innerHTML = "";
-
-            productList.forEach(item => {
-
-                let grid_view_item_clone = grid_view_item.cloneNode(true);
-
-                grid_view_item_clone.querySelector("#grid-image").src = "product-images/" + item.id + "/image1.png";
-                grid_view_item_clone.querySelector("#grid-item-view").href = "single-product.html?id=" + item.id;
-                grid_view_item_clone.querySelector("#grid-title").innerHTML = item.title;
-                grid_view_item_clone.querySelector("#grid-price-max").innerHTML = new Intl.NumberFormat("en-US", {minimumFractionDigits: 2}).format(item.price);
-                grid_view_item_clone.querySelector("#grid-price").innerHTML = new Intl.NumberFormat("en-US", {minimumFractionDigits: 2}).format(item.price - ((item.price / 100) * item.discount));
-                grid_view_item_clone.querySelector("#grid-add-cart").addEventListener("click", () => {
-                    addToCart(item.id, 1);
-                });
-                grid_view_container.appendChild(grid_view_item_clone);
-            });
-
-
-            //list product View
-            let list_view_container = document.getElementById("list-view");
-            let list_view_item = document.getElementById("list-view-item");
-            list_view_container.innerHTML = "";
-            productList.forEach(item => {
-
-                let list_view_item_clone = list_view_item.cloneNode(true);
-
-                list_view_item_clone.querySelector("#list-image").src = "product-images/" + item.id + "/image1.png";
-                list_view_item_clone.querySelector("#list-title").innerHTML = item.title;
-                list_view_item_clone.querySelector("#list-description").innerHTML = item.description;
-                list_view_item_clone.querySelector("#list-item-view").href = "single-product.html?id=" + item.id;
-                list_view_item_clone.querySelector("#list-price-max").innerHTML = new Intl.NumberFormat("en-US", {minimumFractionDigits: 2}).format(item.price);
-                list_view_item_clone.querySelector("#list-price").innerHTML = new Intl.NumberFormat("en-US", {minimumFractionDigits: 2}).format(item.price - ((item.price / 100) * item.discount));
-                list_view_item_clone.querySelector("#list-add-cart").addEventListener("click", () => {
-                    addToCart(item.id, 1);
-                });
-                list_view_container.appendChild(list_view_item_clone);
-            });
-
-
+            //load product
+            loadProductSection(productList);
 
             let list_category_container = document.getElementById("list-group-men");
             let list_category = document.getElementById("category-item");
@@ -97,7 +56,7 @@ const loadShopData = async() => {
                         sub_category_item_clone.querySelector("#sub-category-name").innerHTML = item1.name;
                         sub_category_item_clone.querySelector("#subcategory-selector").addEventListener("change", (e) => {
                             selectedSubCategoty = item1.id;
-                            console.log(selectedSubCategoty)
+                            searchProduct();
                         });
 
                         sub_category_container.appendChild(sub_category_item_clone);
@@ -135,7 +94,7 @@ const searchProduct = async() => {
     const data = {
         selectedSubCategoty: selectedSubCategoty,
         search: document.getElementById("search").value,
-        basic: document.getElementById("price-order").value,
+        price_order: document.getElementById("price-order").value,
         min_price: min_price,
         max_price: max_price
     };
@@ -153,6 +112,11 @@ const searchProduct = async() => {
         const json = await response.json();
         console.log(json);
         if (json.success) {
+            popup.success({
+                message: "Search completed"
+            });
+            //load product
+            loadProductSection(json.productList);
 
         } else {
             popup.error({
@@ -163,6 +127,49 @@ const searchProduct = async() => {
         console.log("Try again later!");
     }
 
+};
 
+const loadProductSection = (productList) => {
+
+    // grid product view
+    let grid_view_container = document.getElementById("grid-view-container");
+    let grid_view_item = document.getElementById("grid-view-item");
+    grid_view_container.innerHTML = "";
+
+    productList.forEach(item => {
+
+        let grid_view_item_clone = grid_view_item.cloneNode(true);
+
+        grid_view_item_clone.querySelector("#grid-image").src = "product-images/" + item.id + "/image1.png";
+        grid_view_item_clone.querySelector("#grid-item-view").href = "single-product.html?id=" + item.id;
+        grid_view_item_clone.querySelector("#grid-title").innerHTML = item.title;
+        grid_view_item_clone.querySelector("#grid-price-max").innerHTML = new Intl.NumberFormat("en-US", {minimumFractionDigits: 2}).format(item.price);
+        grid_view_item_clone.querySelector("#grid-price").innerHTML = new Intl.NumberFormat("en-US", {minimumFractionDigits: 2}).format(item.price - ((item.price / 100) * item.discount));
+        grid_view_item_clone.querySelector("#grid-add-cart").addEventListener("click", () => {
+            addToCart(item.id, 1);
+        });
+        grid_view_container.appendChild(grid_view_item_clone);
+    });
+
+
+    //list product View
+    let list_view_container = document.getElementById("list-view");
+    let list_view_item = document.getElementById("list-view-item");
+    list_view_container.innerHTML = "";
+    productList.forEach(item => {
+
+        let list_view_item_clone = list_view_item.cloneNode(true);
+
+        list_view_item_clone.querySelector("#list-image").src = "product-images/" + item.id + "/image1.png";
+        list_view_item_clone.querySelector("#list-title").innerHTML = item.title;
+        list_view_item_clone.querySelector("#list-description").innerHTML = item.description;
+        list_view_item_clone.querySelector("#list-item-view").href = "single-product.html?id=" + item.id;
+        list_view_item_clone.querySelector("#list-price-max").innerHTML = new Intl.NumberFormat("en-US", {minimumFractionDigits: 2}).format(item.price);
+        list_view_item_clone.querySelector("#list-price").innerHTML = new Intl.NumberFormat("en-US", {minimumFractionDigits: 2}).format(item.price - ((item.price / 100) * item.discount));
+        list_view_item_clone.querySelector("#list-add-cart").addEventListener("click", () => {
+            addToCart(item.id, 1);
+        });
+        list_view_container.appendChild(list_view_item_clone);
+    });
 
 };
