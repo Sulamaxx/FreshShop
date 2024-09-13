@@ -131,7 +131,7 @@ public class UserLogin extends HttpServlet {
                                 }
 
                             }
-
+                            httpSession.removeAttribute("sessionCart");
                             session.beginTransaction().commit();
 
                         } else {

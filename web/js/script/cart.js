@@ -22,7 +22,6 @@ const loadCartData = async() => {
             let total_discount = 0;
 
             cartList.forEach(item => {
-                console.log(item)
                 let cart_item_clone = cart_item.cloneNode(true);
 
                 cart_item_clone.querySelector("#fs-cart-item-image").src = "product-images/" + item.product.id + "/image1.png";

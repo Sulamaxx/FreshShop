@@ -83,7 +83,7 @@ public class AddToCart extends HttpServlet {
                                 Cart cart = new Cart();
                                 cart.setProduct(product);
                                 cart.setQty(Double.parseDouble(qty));
-                                cart.setUser(user);
+                                cart.setUser(user); 
                                 session.save(cart);
 
                                 responseObject.addProperty("success", true);
