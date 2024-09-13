@@ -82,12 +82,17 @@ const loadCheckOut = async() => {
                 address_container.appendChild(p);
             }
 
-
+            //city load
+            loadOption("city", json.cityList);
 
         } else {
             popup.error({
                 message: json.message
             });
+
+            setTimeout(() => {
+                window.location = "index.html"
+            }, 1000);
         }
 
     } else {
@@ -95,6 +100,15 @@ const loadCheckOut = async() => {
             message: "Try again later!"
         });
     }
+};
+
+const loadOption = (id, resultList) => {
+    resultList.forEach(item => {
+        let option = document.createElement("option");
+        option.innerHTML = item.name;
+        option.value = item.id;
+        document.getElementById(id).appendChild(option);
+    });
 };
 
 const checkSelected = () => {
@@ -121,17 +135,18 @@ const checkOut = async() => {
 
     const data = {
         selectedAddress: selectedAddress,
-        first_name: document.getElementById("first_name").value,
-        last_name: document.getElementById("last_name").value,
+        first_name: document.getElementById("first-name").value,
+        last_name: document.getElementById("last-name").value,
         mobile: document.getElementById("mobile").value,
         email: document.getElementById("email").value,
         line1: document.getElementById("line1").value,
         line2: document.getElementById("line2").value,
         city: document.getElementById("city").value,
-        postal_code: document.getElementById("postal_code").value
+        postal_code: document.getElementById("postal-code").value
     };
 
-    const response = await fetch("UserLogin", {
+
+    const response = await fetch("CheckOut", {
         method: "POST",
         body: JSON.stringify(data),
         header: {
@@ -146,16 +161,9 @@ const checkOut = async() => {
             popup.success({
                 message: json.message
             });
-
-            if (json.message == "Login successfully") {
-                setTimeout(() => {
-                    window.location = "index.html";
-                }, 1000);
-            } else {
-                setTimeout(() => {
-                    window.location = "verification.html";
-                }, 1000);
-            }
+            setTimeout(() => {
+                window.location = "index.html"
+            }, 1000);
         } else {
             popup.error({
                 message: json.message

@@ -33,7 +33,7 @@ public class Address implements Serializable {
     private String postal_code;
 
     @Column(name = "mobile", length = 10, nullable = false)
-    private String monile;
+    private String mobile;
 
     @Column(name = "first_name", length = 45, nullable = false)
     private String first_name;
@@ -103,12 +103,12 @@ public class Address implements Serializable {
         this.postal_code = postal_code;
     }
 
-    public String getMonile() {
-        return monile;
+    public String getMobile() {
+        return mobile;
     }
 
-    public void setMonile(String monile) {
-        this.monile = monile;
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
     }
 
     public String getFirst_name() {
