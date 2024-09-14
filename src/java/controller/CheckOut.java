@@ -218,7 +218,7 @@ public class CheckOut extends HttpServlet {
 
                 payHere.addProperty("return_url", "");
                 payHere.addProperty("cancel_url", "");
-                payHere.addProperty("notify_url", "");//***
+                payHere.addProperty("notify_url", "https://7159-2402-4000-2360-164c-61b3-67e8-5861-21fa.ngrok-free.app/FreshShop/VerifyPayment");//***
 
                 payHere.addProperty("order_id", String.valueOf(order_id));
                 payHere.addProperty("items", items);

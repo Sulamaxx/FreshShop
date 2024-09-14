@@ -49,8 +49,12 @@ public class LoadShopData extends HttpServlet {
 
             Criteria criteria2 = session.createCriteria(Product.class);
             criteria2.addOrder(Order.desc("id"));
+            
+            // all product count
+            responseObject.addProperty("allProductCount", criteria2.list().size());
+            
             criteria2.setFirstResult(0);
-            criteria2.setMaxResults(8);
+            criteria2.setMaxResults(6);
             List<Product> productList = criteria2.list();
 
             for (Product product : productList) {

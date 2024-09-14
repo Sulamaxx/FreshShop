@@ -82,8 +82,10 @@ public class SearchProduct extends HttpServlet {
             // all product count
             responseObject.addProperty("allProductCount", criteria.list().size());
 
-            criteria.setMaxResults(0);
-            criteria.setMaxResults(8);
+            int firstResult = requestObject.get("firstResult").getAsInt();
+            System.out.println(firstResult);
+            criteria.setFirstResult(firstResult);
+            criteria.setMaxResults(6);
 
             List<Product> productList = criteria.list();
 

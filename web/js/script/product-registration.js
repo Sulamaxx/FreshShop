@@ -35,6 +35,7 @@ const loadDataForRegistration = async() => {
 };
 
 const loadOption = (id, resultList) => {
+    console.log(resultList);
     resultList.forEach(item => {
         let option = document.createElement("option");
         option.innerHTML = item.name;

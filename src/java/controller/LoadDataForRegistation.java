@@ -3,6 +3,7 @@ package controller;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import entity.Cart;
+import entity.Category;
 import entity.SubCategory;
 import entity.Unit;
 import java.io.IOException;
@@ -36,7 +37,7 @@ public class LoadDataForRegistation extends HttpServlet {
             if (req.getSession().getAttribute("user") != null) {
 
                 // get categories
-                List<Cart> categoryList = session.createCriteria(Cart.class).list();
+                List<Cart> categoryList = session.createCriteria(Category.class).list();
                 // get sub categories
                 List<SubCategory> subCategoryList = session.createCriteria(SubCategory.class).list();
                 //get units

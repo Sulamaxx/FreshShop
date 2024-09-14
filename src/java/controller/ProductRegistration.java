@@ -7,7 +7,7 @@ package controller;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import dto.UserDTO;
-import entity.Cart;
+import entity.Category;
 import entity.Product;
 import entity.ProductStatus;
 import entity.SubCategory;
@@ -16,7 +16,6 @@ import entity.User;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Date;
@@ -30,7 +29,6 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 import model.HibernateUtil;
 import model.Validations;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
@@ -97,7 +95,7 @@ public class ProductRegistration extends HttpServlet {
 
             try {
                 // check category exist
-                Cart categoryObject = (Cart) session.get(Cart.class, Integer.parseInt(category));
+                Category categoryObject = (Category) session.get(Category.class, Integer.parseInt(category));
                 if (categoryObject == null) {
                     responseObject.addProperty("message", "Invalid category");
                 } else {
@@ -115,52 +113,55 @@ public class ProductRegistration extends HttpServlet {
                             if (unitObject == null) {
                                 responseObject.addProperty("message", "Invalid unit");
                             } else {
+                                if (httpSession.getAttribute("user") != null) {
+                                    //get user db
+                                    UserDTO userDTO = (UserDTO) httpSession.getAttribute("user");
+                                    User user = (User) session.createCriteria(User.class).add(Restrictions.eq("email", userDTO.getEmail())).uniqueResult();
 
-                                //get user db
-                                UserDTO userDTO = (UserDTO) httpSession.getAttribute("user");
-                                User user = (User) session.createCriteria(User.class).add(Restrictions.eq("email", userDTO.getEmail())).uniqueResult();
+                                    //save product
+                                    Product product = new Product();
+                                    product.setTitle(title);
+                                    product.setDescription(description);
+                                    product.setQty(Double.parseDouble(qty));
+                                    product.setPrice(Double.parseDouble(price));
+                                    product.setDiscount(Double.parseDouble(discount));
+                                    product.setSubCategory(subCategoryObject);
+                                    product.setProductStatus((ProductStatus) session.get(ProductStatus.class, 1));
+                                    product.setUnit(unitObject);
+                                    product.setDatetime(new Date());
+                                    product.setUser(user);
 
-                                //save product
-                                Product product = new Product();
-                                product.setTitle(title);
-                                product.setDescription(description);
-                                product.setQty(Double.parseDouble(qty));
-                                product.setPrice(Double.parseDouble(price));
-                                product.setDiscount(Double.parseDouble(discount));
-                                product.setSubCategory(subCategoryObject);
-                                product.setProductStatus((ProductStatus) session.get(ProductStatus.class, 1));
-                                product.setUnit(unitObject);
-                                product.setDatetime(new Date());
-                                product.setUser(user);
+                                    int product_id = (int) session.save(product);
+                                    session.beginTransaction().commit();
 
-                                int product_id = (int) session.save(product);
-                                session.beginTransaction().commit();
+                                    // get application real path and change as web
+                                    String newApplicationPath = req.getServletContext().getRealPath("").replace("build" + File.separator + "web", "web");
 
-                                // get application real path and change as web
-                                String newApplicationPath = req.getServletContext().getRealPath("").replace("build" + File.separator + "web", "web");
+                                    // create folder
+                                    File folder = new File(newApplicationPath + File.separator + "product-images" + File.separator + product_id);
+                                    if (!folder.exists()) {
+                                        folder.mkdirs();
+                                    }
 
-                                // create folder
-                                File folder = new File(newApplicationPath + File.separator + "product-images" + File.separator + product_id);
-                                if (!folder.exists()) {
-                                    folder.mkdirs();
+                                    //image save
+                                    File file = new File(folder, "image1.png");
+                                    InputStream inputStream = image1.getInputStream();
+                                    Files.copy(inputStream, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+                                    File file1 = new File(folder, "image2.png");
+                                    InputStream inputStream1 = image2.getInputStream();
+                                    Files.copy(inputStream1, file1.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+                                    File file2 = new File(folder, "image3.png");
+                                    InputStream inputStream2 = image3.getInputStream();
+                                    Files.copy(inputStream2, file2.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+                                    responseObject.addProperty("success", true);
+                                    responseObject.addProperty("message", "Product registered successfully");
+
+                                } else {
+                                    responseObject.addProperty("message", "Please Login first");
                                 }
-
-                                //image save
-                                File file = new File(folder, "image1.png");
-                                InputStream inputStream = image1.getInputStream();
-                                Files.copy(inputStream, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
-
-                                File file1 = new File(folder, "image2.png");
-                                InputStream inputStream1 = image2.getInputStream();
-                                Files.copy(inputStream1, file1.toPath(), StandardCopyOption.REPLACE_EXISTING);
-
-                                File file2 = new File(folder, "image3.png");
-                                InputStream inputStream2 = image3.getInputStream();
-                                Files.copy(inputStream2, file2.toPath(), StandardCopyOption.REPLACE_EXISTING);
-
-                                responseObject.addProperty("success", true);
-                                responseObject.addProperty("message", "Product registered successfully");
-
                             }
 
                         } else {

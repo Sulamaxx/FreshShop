@@ -14,7 +14,8 @@ const loadShopData = async() => {
             let productList = json.productList;
 
             //load product
-            loadProductSection(productList);
+            loadProductSection(productList, json.allProductCount);
+
 
             let list_category_container = document.getElementById("list-group-men");
             let list_category = document.getElementById("category-item");
@@ -86,12 +87,13 @@ const loadShopData = async() => {
 
 };
 
-const searchProduct = async() => {
+const searchProduct = async(firstResult) => {
 
     let min_price = $("#slider-range").slider("values", 0);
     let max_price = $("#slider-range").slider("values", 1);
 
     const data = {
+        firstResult: firstResult,
         selectedSubCategoty: selectedSubCategoty,
         search: document.getElementById("search").value,
         price_order: document.getElementById("price-order").value,
@@ -116,8 +118,7 @@ const searchProduct = async() => {
                 message: "Search completed"
             });
             //load product
-            loadProductSection(json.productList);
-
+            loadProductSection(json.productList, json.allProductCount);
         } else {
             popup.error({
                 message: json.message
@@ -129,7 +130,9 @@ const searchProduct = async() => {
 
 };
 
-const loadProductSection = (productList) => {
+var currentPage = 0;
+
+const loadProductSection = (productList, allProductCount) => {
 
     // grid product view
     let grid_view_container = document.getElementById("grid-view-container");
@@ -172,4 +175,57 @@ const loadProductSection = (productList) => {
         list_view_container.appendChild(list_view_item_clone);
     });
 
+    //pagination
+    let pagination_container = document.getElementById("pagination-container");
+    let pagination_button = document.getElementById("pagination-button");
+    let pagination_button_button = document.getElementById("pagination-button-button");
+    pagination_container.innerHTML = "";
+
+    let product_count = allProductCount;
+    let product_per_page = 9;
+
+    let pages = Math.ceil(product_count / product_per_page);
+
+    //Previuos button
+    if (currentPage != 0) {
+        let pagination_button_clone_Prev = pagination_button_button.cloneNode(true);
+        pagination_button_clone_Prev.querySelector("#pagination-button-a-a").innerHTML = "Prev";
+        pagination_button_clone_Prev.addEventListener("click", () => {
+            currentPage--;
+            searchProduct((currentPage * 6));
+
+        });
+
+        pagination_container.appendChild(pagination_button_clone_Prev);
+    }
+
+    //Add Page Button
+    for (let i = 0; i < pages; i++) {
+        let pagination_button_clone = pagination_button.cloneNode(true);
+        pagination_button_clone.querySelector("#pagination-button-a").innerHTML = i + 1;
+        pagination_button_clone.addEventListener("click", () => {
+            currentPage = i;
+            searchProduct((i * 6));
+
+        });
+
+        if (i == currentPage) {
+            pagination_button_clone.className = "page-item active";
+        } else {
+            pagination_button_clone.className = "page-item ";
+        }
+
+        pagination_container.appendChild(pagination_button_clone);
+    }
+
+    //next button
+    if (currentPage != --pages) {
+        let pagination_button_clone_next = pagination_button_button.cloneNode(true);
+        pagination_button_clone_next.querySelector("#pagination-button-a-a").innerHTML = "Next";
+        pagination_button_clone_next.addEventListener("click", () => {
+            currentPage++;
+            searchProduct((currentPage * 6));
+        });
+        pagination_container.appendChild(pagination_button_clone_next);
+    }
 };
