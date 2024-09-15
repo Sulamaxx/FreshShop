@@ -1,4 +1,3 @@
-const popup = Notification();
 const loadIndexData = async() => {
 
     const response = await fetch("LoadIndexData");
@@ -47,3 +46,5 @@ const loadIndexData = async() => {
 
     }
 };
+
+

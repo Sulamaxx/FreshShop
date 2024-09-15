@@ -3,7 +3,8 @@
 <hibernate-configuration>
     <session-factory>
         <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
-        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/fresh_shop?useSSL=false</property>
+        <!--<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/fresh_shop?useSSL=false</property>-->
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/fresh_shop?useSSL=false&amp;allowPublicKeyRetrieval=true&amp;serverTimezone=UTC</property>
         <property name="hibernate.connection.username">root</property>
         <property name="hibernate.connection.password">sulochana123</property>
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>

@@ -5,6 +5,7 @@
 package controller;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import dto.CartDTO;
 import dto.UserDTO;
@@ -41,7 +42,7 @@ public class UserLogin extends HttpServlet {
         JsonObject responseObject = new JsonObject();
         responseObject.addProperty("success", false);
 
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         Session session = HibernateUtil.getSessionFactory().openSession();
 
         HttpSession httpSession = req.getSession();
@@ -146,7 +147,8 @@ public class UserLogin extends HttpServlet {
                             userDTO1.setLast_name(user.getLast_name());
                             userDTO1.setEmail(user.getEmail());
                             userDTO1.setDatetime(user.getDatetime());
-                            httpSession.setAttribute("user", userDTO);
+                            
+                            httpSession.setAttribute("user", userDTO1);
 
                             responseObject.addProperty("message", "Login successfully");
                         } else {

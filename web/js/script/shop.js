@@ -57,7 +57,7 @@ const loadShopData = async() => {
                         sub_category_item_clone.querySelector("#sub-category-name").innerHTML = item1.name;
                         sub_category_item_clone.querySelector("#subcategory-selector").addEventListener("change", (e) => {
                             selectedSubCategoty = item1.id;
-                            searchProduct();
+                            searchProduct(0);
                         });
 
                         sub_category_container.appendChild(sub_category_item_clone);

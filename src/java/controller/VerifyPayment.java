@@ -4,14 +4,22 @@
  */
 package controller;
 
+import entity.OrderItem;
+import entity.OrderStatus;
+import entity.Orders;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.HibernateUtil;
 import model.PayHere;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 
 /**
  *
@@ -38,6 +46,20 @@ public class VerifyPayment extends HttpServlet {
         if (generateMd5Hash.equals(md5sig) && status_code.equals("2")) {
             System.out.println("Payment Complete of " + order_id);
             // update order status as paid
+            Session session = HibernateUtil.getSessionFactory().openSession();
+            Orders order = (Orders) session.get(Orders.class, order_id);
+
+            Criteria criteria = session.createCriteria(OrderItem.class);
+            criteria.add(Restrictions.eq("order", order));
+
+            OrderStatus orderStatus = (OrderStatus) session.get(OrderStatus.class, 2);
+
+            List<OrderItem> orderItemList = criteria.list();
+
+            for (OrderItem orderItem : orderItemList) {
+                orderItem.setOrderStatus(orderStatus);
+            }
+
         }
 
     }
